@@ -9,6 +9,7 @@ abstract class GitHubClientBase
 	protected $debug = false;
 	protected $username = null;
 	protected $password = null;
+	protected $token = null;
 	protected $timeout = 240;
 	protected $rateLimit = 0;
 	protected $rateLimitRemaining = 0;
@@ -29,6 +30,11 @@ abstract class GitHubClientBase
 	{
 		$this->username = $username;
 		$this->password = $password;
+	}
+	
+	public function setToken($token)
+	{
+		$this->token = $token;
 	}
 	
 	public function setDebug($debug)
@@ -154,6 +160,10 @@ abstract class GitHubClientBase
 		{
 			curl_setopt($c, CURLOPT_HTTPAUTH, CURLAUTH_BASIC); 
 			curl_setopt($c, CURLOPT_USERPWD, "$this->username:$this->password");
+		}
+		
+		if ($this->token) {
+			curl_setopt($c, CURLOPT_HTTPHEADER, array( 'Authorization: token ' . $this->token ) );
 		}
 		 
 		curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
